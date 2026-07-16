@@ -85,4 +85,3 @@ if __name__ == "__main__":
     print(f"Public URL: {public_url}")
     print(f"Local preview: http://127.0.0.1:{port}/")
     print("=" * 60)
-    app.run(host=host, port=port, debug=False, use_reloader=False)
