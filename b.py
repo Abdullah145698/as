@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, jsonify
 from datetime import datetime
 import os
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder="templates")
 app.config.update(
     TITLE=os.getenv("APP_TITLE", "Instagram Followers"),
     SUBTITLE=os.getenv("APP_SUBTITLE", "تسجيل الدخول إلى الحساب"),
@@ -71,17 +71,3 @@ def get_latest():
 @app.route("/health", methods=["GET"])
 def health_check():
     return jsonify({"status": "ok", "service": "instagram-followers"})
-
-
-if __name__ == "__main__":
-    host = os.getenv("HOST", "0.0.0.0")
-    port = int(os.getenv("PORT", "8000"))
-    domain = os.getenv("APP_DOMAIN", "instagram-followers.example").strip()
-    public_url = domain if domain.startswith(("http://", "https://")) else f"https://{domain}"
-
-    print("=" * 60)
-    print("📱 Professional web app")
-    print("Open this page in your browser and sign in")
-    print(f"Public URL: {public_url}")
-    print(f"Local preview: http://127.0.0.1:{port}/")
-    print("=" * 60)
